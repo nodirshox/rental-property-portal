@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: spring-data
+  data:
+    cassandra:
+      keyspace-name: ${USER_SERVICE_CASSANDRA_KEYSPACE}
+      contact-points: my-release-cassandra.default.svc.cluster.local
+      #contact-points: ${USER_SERVICE_CASSANDRA_HOST}
+      port: ${USER_SERVICE_CASSANDRA_PORT}
+      password: ${USER_SERVICE_CASSANDRA_PASSWORD}
+      username: cassandra
+      schema-action: none
+server:
+  port: 8001
+config:
+  secret-key: ${USER_SERVICE_SECRET_KEY}

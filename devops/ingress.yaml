@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-ingress
+  annotations:
+    kubernetes.io/ingress.class: haproxy
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /user
+            pathType: Prefix
+            backend:
+              service:
+                name: airbnb-user-service
+                port:
+                  number: 8001
+          - path: /property
+            pathType: Prefix
+            backend:
+              service:
+                name: airbnb-property-service
+                port:
+                  number: 8002
+          - path: /order
+            pathType: Prefix
+            backend:
+              service:
+                name: airbnb-order-service
+                port:
+                  number: 8003
+          - path: /payment
+            pathType: Prefix
+            backend:
+              service:
+                name: airbnb-payment-service
+                port:
+                  number: 8004
+          - path: /notification
+            pathType: Prefix
+            backend:
+              service:
+                name: airbnb-notification-service
+                port:
+                  number: 8005

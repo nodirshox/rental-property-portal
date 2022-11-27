@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airbnb-order
+  labels:
+    app: airbnb-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airbnb-order
+  template:
+    metadata:
+      labels:
+        app: airbnb-order
+    spec:
+      containers:
+        - name: airbnb-user
+          image: nodirshox/airbnb-order-service
+          ports:
+            - containerPort: 8003
+          env:
+            - name: USER_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: user-service-host
+            - name: USER_SERVICE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: user-service-port
+            - name: USER_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: user-service-key
+
+            - name: ORDER_SERVICE_CASSANDRA_KEYSPACE
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-keyspace
+            - name: ORDER_SERVICE_CASSANDRA_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-port
+            - name: ORDER_SERVICE_CASSANDRA_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-port
+            - name: ORDER_SERVICE_CASSANDRA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-password
+            - name: ORDER_SERVICE_KAFKA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: kafka-host
+            - name: ORDER_SERVICE_KAFKA_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: kafka-port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbnb-order-service
+spec:
+  selector:
+    app: airbnb-order
+  ports:
+    - protocol: TCP
+      port: 8003
+      targetPort: 8003

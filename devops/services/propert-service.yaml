@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airbnb-property
+  labels:
+    app: airbnb-property
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airbnb-property
+  template:
+    metadata:
+      labels:
+        app: airbnb-property
+    spec:
+      containers:
+        - name: airbnb-property
+          image: nodirshox/airbnb-property-service
+          ports:
+            - containerPort: 8002
+          env:
+            - name: PROPERTY_SERVICE_KAFKA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: kafka-host
+            - name: PROPERTY_SERVICE_KAFKA_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: kafka-port
+            - name: PROPERTY_SERVICE_MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: app-mongo-user
+            - name: PROPERTY_SERVICE_MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: app-mongo-user
+            - name: PROPERTY_SERVICE_MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: mongodb-host
+            - name: PROPERTY_SERVICE_MONGO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: app-mongo-database
+            - name: USER_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: user-service-host
+            - name: USER_SERVICE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: user-service-port
+            - name: USER_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: user-service-key
+            - name: PROPERTY_SERVICE_REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: redis-host
+            - name: PROPERTY_SERVICE_REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: redis-port
+            - name: PROPERTY_SERVICE_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: redis-password
+            - name: AWS_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: aws-access-key
+            - name: AWS_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: aws-secret-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbnb-property-service
+spec:
+  selector:
+    app: airbnb-property
+  ports:
+    - protocol: TCP
+      port: 8002
+      targetPort: 8002

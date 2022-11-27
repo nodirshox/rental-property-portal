@@ -1,0 +1,9 @@
+1. docker-compose exec cassandra /bin/bash
+
+2. cqlsh
+
+3. CREATE KEYSPACE airbnb WITH REPLICATION = {'class' : 'SimpleStrategy','replication_factor' : 1};
+
+4. use airbnb;
+
+5. create table user(id int primary key, firstname text, lastname text, email text, password text, role text);

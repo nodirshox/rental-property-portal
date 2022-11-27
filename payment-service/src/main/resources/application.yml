@@ -1,0 +1,19 @@
+spring:
+  kafka:
+    bootstrap-servers: ${PAYMENT_SERVICE_KAFKA_HOST}:${PAYMENT_SERVICE_KAFKA_PORT}
+  data:
+    mongodb:
+      uri: mongodb://${PAYMENT_SERVICE_MONGO_USER}:${PAYMENT_SERVICE_MONGO_PASSWORD}@${PAYMENT_SERVICE_MONGO_HOST}/${PAYMENT_SERVICE_MONGO_DATABASE}
+      database: ${PAYMENT_SERVICE_MONGO_DATABASE}
+      authentication-database: ${PAYMENT_SERVICE_MONGO_DATABASE}
+config:
+  topic:
+    update-order-status: "update-order-status-topic"
+    update-property-status: "update-property-status-topic"
+    send-email: "send-email-topic"
+  user-service:
+    host: ${USER_SERVICE_HOST}
+    port: ${USER_SERVICE_PORT}
+    key: ${USER_SERVICE_KEY}
+server:
+  port: 8004

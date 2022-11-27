@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airbnb-user
+  labels:
+    app: airbnb-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airbnb-user
+  template:
+    metadata:
+      labels:
+        app: airbnb-user
+    spec:
+      containers:
+        - name: airbnb-user
+          image: nodirshox/airbnb-user-service
+          ports:
+            - containerPort: 8001
+          env:
+            - name: USER_SERVICE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: user-service-key
+            - name: USER_SERVICE_CASSANDRA_KEYSPACE
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-keyspace
+            - name: USER_SERVICE_CASSANDRA_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-port
+            - name: USER_SERVICE_CASSANDRA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-password
+            - name: USER_SERVICE_CASSANDRA_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbnb-user-service
+spec:
+  selector:
+    app: airbnb-user
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001

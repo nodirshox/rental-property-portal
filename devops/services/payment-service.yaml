@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airbnb-payment
+  labels:
+    app: airbnb-payment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airbnb-payment
+  template:
+    metadata:
+      labels:
+        app: airbnb-payment
+    spec:
+      containers:
+        - name: airbnb-payment
+          image: nodirshox/airbnb-payment-service
+          ports:
+            - containerPort: 8004
+          env:
+            - name: PAYMENT_SERVICE_KAFKA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: kafka-host
+            - name: PAYMENT_SERVICE_KAFKA_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: kafka-port
+            - name: PAYMENT_SERVICE_MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: app-mongo-user
+            - name: PAYMENT_SERVICE_MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: app-mongo-user
+            - name: PAYMENT_SERVICE_MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: mongodb-host
+            - name: PAYMENT_SERVICE_MONGO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: app-mongo-database
+            - name: USER_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: user-service-host
+            - name: USER_SERVICE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: user-service-port
+            - name: USER_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: user-service-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbnb-payment-service
+spec:
+  selector:
+    app: airbnb-payment
+  ports:
+    - protocol: TCP
+      port: 8004
+      targetPort: 8004

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airbnb-notification
+  labels:
+    app: airbnb-notification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airbnb-notification
+  template:
+    metadata:
+      labels:
+        app: airbnb-notification
+    spec:
+      containers:
+        - name: airbnb-user
+          image: nodirshox/airbnb-notification-service
+          ports:
+            - containerPort: 8005
+          env:
+            - name: NOTIFICATION_SERVICE_CASSANDRA_KEYSPACE
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-keyspace
+            - name: NOTIFICATION_SERVICE_CASSANDRA_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-port
+            - name: NOTIFICATION_SERVICE_CASSANDRA_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-port
+            - name: NOTIFICATION_SERVICE_CASSANDRA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: cassandra-password
+            - name: NOTIFICATION_SERVICE_MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: mail-username
+            - name: NOTIFICATION_SERVICE_MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: mail-password
+            - name: NOTIFICATION_SERVICE_KAFKA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: main-configmap
+                  key: kafka-host
+            - name: NOTIFICATION_SERVICE_KAFKA_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: main-secret
+                  key: kafka-port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airbnb-notification-service
+spec:
+  selector:
+    app: airbnb-notification
+  ports:
+    - protocol: TCP
+      port: 8005
+      targetPort: 8005

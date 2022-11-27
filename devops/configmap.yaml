@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-configmap
+data:
+  kafka-host: kafka-service
+  mongodb-host: mongodb-service
+  user-service-host: airbnb-user-service

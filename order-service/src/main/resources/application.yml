@@ -1,0 +1,25 @@
+spring:
+  kafka:
+    bootstrap-servers: ${ORDER_SERVICE_KAFKA_HOST}:${ORDER_SERVICE_KAFKA_PORT}
+  data:
+    cassandra:
+      keyspace-name: ${ORDER_SERVICE_CASSANDRA_KEYSPACE}
+      contact-points: my-release-cassandra.default.svc.cluster.local
+      #contact-points: ${ORDER_SERVICE_CASSANDRA_HOST}
+      port: ${ORDER_SERVICE_CASSANDRA_PORT}
+      password: ${ORDER_SERVICE_CASSANDRA_PASSWORD}
+      username: cassandra
+      schema-action: none
+
+config:
+  topic:
+    create-order: "create-order"
+    update-order-status: "update-order-status-topic"
+    send-email: "send-email-topic"
+  user-service:
+    host: ${USER_SERVICE_HOST}
+    port: ${USER_SERVICE_PORT}
+    key: ${USER_SERVICE_KEY}
+
+server:
+  port: 8003
